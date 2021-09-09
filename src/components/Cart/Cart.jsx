@@ -24,6 +24,16 @@ export default function Cart(props) {
     setIsCheckingOut(true);
   };
 
+  const submitOrderHandler = (userData) => {
+    fetch(`https://yummi2-default-rtdb.firebaseio.com/orders.json`, {
+      method: "POST",
+      body: JSON.stringify({
+        user: userData,
+        orderedItems: cartCtx.items
+      })
+    });
+  };
+
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartCtx.items.map((item) => (
@@ -58,7 +68,9 @@ export default function Cart(props) {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckingOut && <Checkout onCancel={props.onClose} />}
+      {isCheckingOut && (
+        <Checkout onConfirm={submitOrderHandler} onCancel={props.onClose} />
+      )}
       {!isCheckingOut && modalActions}
     </Modal>
   );
